@@ -14,24 +14,25 @@ import os
 load_dotenv()
 
 seaseonlist = [
+    "22UCL",
     "21UCL",
     "23TOTN",
-    "2012KH",
-    "TKL",
-    "22UCL",
-    "20UCL",
+    "ICON",
     "BWC",
     "WC22",
-    "ICON",
-    "LH",
-    "22KLB",
-    "BTB",
+    "2012KH",
+    "HG",
+    "2012KH",
     "LN",
-    "CAP",
-    "22KFA",
+    "ICONTM",
+    "TKL",
+    "20UCL",
+    "BTB",
+    "22KLB",
 ]
 
 seaseonlist_newest = [
+    "23TOTS",
     "ICONTM",
     "HG",
     "RTN",
@@ -46,7 +47,6 @@ seaseonlist_newest = [
     "BWC",
     "SPL",
     "LN",
-    "22TOTS",
 ]
 
 postionlist = [
@@ -155,10 +155,10 @@ def get_tactic(order, tacticjson):
     temp_dict["order"] = order
     temp_dict["players"] = []
 
-    path = "D:/dampi/public/players"
+    path = "C:/Users/rudgh/Desktop/players"
     file_list = os.listdir(path)
 
-    path2 = "D:/dampi/public/playersAction"
+    path2 = "C:/Users/rudgh/Desktop/playersAction"
     file_list2 = os.listdir(path2)
 
     for playerkey in range(0, 11):
@@ -170,7 +170,8 @@ def get_tactic(order, tacticjson):
                 + ".webp"
             )
         elif (
-            "p" + str(tacticjson["players"][playerkey]["spid"] % 1000000) + ".webp"
+            "p" + str(tacticjson["players"][playerkey]
+                      ["spid"] % 1000000) + ".webp"
             in file_list
         ):
             temp_dict2["imgsrc"] = (
@@ -225,10 +226,17 @@ async def main():
         get_tactic(i, tacticList[i])
 
     recommenddf = pd.DataFrame(all_recommend_list)
-    coll.insert_many(recommenddf.to_dict("records"))
+
+    for recommend in recommenddf.to_dict("records"):
+        coll.update_one({"_id": recommend["_id"]}, {
+                        "$set": recommend}, upsert=True)
+        print(recommend["_id"], "-> done")
 
     tacticdf = pd.DataFrame(all_tactic_list)
-    coll.insert_many(tacticdf.to_dict("records"))
+
+    for tactic in tacticdf.to_dict("records"):
+        coll.update_one({"_id": tactic["_id"]}, {"$set": tactic}, upsert=True)
+        print(tactic["_id"], "-> done")
 
 
 if __name__ == "__main__":

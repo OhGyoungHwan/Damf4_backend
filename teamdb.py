@@ -6,6 +6,11 @@ import pandas as pd
 
 import pymongo
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 kor_to_rng = {
     "속력": "sprintspeed",
     "가속력": "acceleration",
@@ -83,12 +88,17 @@ def scrapteamcolor(option1, option2):
         for i in temp:
             temp_str_list = i.text.split(" +")
             temp_dict2[kor_to_rng[temp_str_list[0]]] = int(temp_str_list[1])
+        if option1 == "affiliation":
+            if soup2.select_one("div.level").text == "3단계":
+                temp_dict2["all"] = 3
+            else:
+                temp_dict2["all"] = 4
         temp_dict["ability"] = temp_dict2
         concatlist.append(temp_dict)
 
 
 if __name__ == "__main__":
-    conn = pymongo.MongoClient("mongodb://localhost:27017")
+    conn = pymongo.MongoClient(os.environ.get("DATABASE_URL"))
     db = conn.get_database("fifa4sim")
     coll = db.get_collection("teamcolors")
     print("===DB 연결완료===")

@@ -16,10 +16,10 @@ import os
 
 load_dotenv()
 
-path = "D:/dampi/public/players"
+path = "D:\players"
 file_list = os.listdir(path)
 
-path2 = "D:/dampi/public/playersAction"
+path2 = "D:\playersAction"
 file_list2 = os.listdir(path2)
 
 kor_to_rng = {
@@ -102,7 +102,8 @@ def simplayer(playerdf, weighted_columns, unweighted_columns):
     # 데이터 전처리
     transformer_StandardScaler = ColumnTransformer(
         [
-            ("StandardScaler", StandardScaler(), weighted_columns + unweighted_columns),
+            ("StandardScaler", StandardScaler(),
+             weighted_columns + unweighted_columns),
         ]
     )
     transformerdf_MinMaxScaler = ColumnTransformer(
@@ -123,7 +124,8 @@ def simplayer(playerdf, weighted_columns, unweighted_columns):
         columns=weighted_columns + unweighted_columns,
     )
 
-    df_MinMaxScaler[weighted_columns] = df_MinMaxScaler[weighted_columns].mul(2)
+    df_MinMaxScaler[weighted_columns] = df_MinMaxScaler[weighted_columns].mul(
+        2)
 
     # cosine알고리즘 적용
     cosine_sim = cosine_similarity(df_MinMaxScaler)
@@ -195,7 +197,8 @@ async def findplayer(spid, concatlist):
         re.sub(
             r"[^0-9]",
             "",
-            str(elements.text.replace(temp["mainfoot"], "").replace(" – ", "")),
+            str(elements.text.replace(
+                temp["mainfoot"], "").replace(" – ", "")),
         )
     )
 

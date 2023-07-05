@@ -7,6 +7,10 @@ import asyncio
 from functools import partial
 import pymongo
 import json
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 def addprice(element):
@@ -23,7 +27,6 @@ def addprice(element):
 
 
 async def requestsseson(season, pay, skillmove):
-
     loop = asyncio.get_event_loop()
     request = partial(
         requests.post,
@@ -62,7 +65,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    conn = pymongo.MongoClient("mongodb://localhost:27017")
+    conn = pymongo.MongoClient(os.environ.get("DATABASE_URL"))
     db = conn.get_database("fifa4sim")
     coll = db.get_collection("players")
     print("===DB 연결완료===")

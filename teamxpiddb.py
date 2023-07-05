@@ -14,6 +14,11 @@ import asyncio
 
 from functools import partial
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 df = pd.DataFrame()
 temp_list = []
 
@@ -38,8 +43,7 @@ async def seemore(ovr, team, addlist=None):
     soup = bs(res.text, "html.parser")
     elements = soup.select("a.btn_preview")
     addlist += list(
-        map(lambda x: int(re.findall(
-            r"[0-9,]+", str(x))[0]) % 1000000, elements)
+        map(lambda x: int(re.findall(r"[0-9,]+", str(x))[0]) % 1000000, elements)
     )
 
     elements = soup.select("div.info_middle")
@@ -67,16 +71,18 @@ async def seemore(ovr, team, addlist=None):
 async def maketeamxpid_db():
     futures = []
     futures += [
-        asyncio.ensure_future(seemore(200, teamdict))
-        for teamdict in list(coll.find())
+        asyncio.ensure_future(seemore(200, teamdict)) for teamdict in list(coll.find())
     ]
     await asyncio.gather(*futures)
     tempdf = pd.DataFrame(temp_list)
-    coll2.insert_many(tempdf.to_dict("records"))
+
+    for temp in tempdf.to_dict("records"):
+        coll2.update_one({"_id": temp["_id"]}, {"$set": temp}, upsert=True)
+        print(temp["_id"], "-> done")
 
 
 if __name__ == "__main__":
-    conn = pymongo.MongoClient("mongodb://localhost:27017")
+    conn = pymongo.MongoClient(os.environ.get("DATABASE_URL"))
     db = conn.get_database("fifa4sim")
     coll = db.get_collection("teamcolors")
     coll2 = db.get_collection("teamxpid")
