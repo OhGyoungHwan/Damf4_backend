@@ -1,11 +1,11 @@
 # Damf4_backend
 Dampi 백엔드
 
-players, recommend, teamcolors, teamxpid 4가지 컬렉션 사용 중
-players: 선수데이터
-recommend: 추천 선수 데이터
-teamcolors: 팀컬러
-teamcolors: 팀컬러에 속하는 선수 정보
+players, recommend, teamcolors, teamxpid 4가지 컬렉션 사용 중 <br/>
+players: 선수데이터 <br/>
+recommend: 추천 선수 데이터 <br/>
+teamcolors: 팀컬러 <br/>
+teamcolors: 팀컬러에 속하는 선수 정보 <br/>
 
 ### python
 
